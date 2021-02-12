@@ -38,6 +38,7 @@ class _TakePhotoState extends State<TakePhoto> {
         photo = file;
       });
       print("SHOT");
+      onSetFlashModeButtonPressed(FlashMode.off);
       await _determinePosition().then((Position geoPosition) {
         pos = geoPosition;
       });
