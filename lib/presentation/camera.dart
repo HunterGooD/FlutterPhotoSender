@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_camera/presentation/DialogMessage.dart';
 import 'package:geolocator/geolocator.dart';
 
 import 'package:flutter_camera/presentation/OpenImage.dart';
@@ -27,33 +28,6 @@ class _TakePhotoState extends State<TakePhoto> {
     _initialControllerFuture = _cameraController.initialize();
   }
 
-  Future<void> _showMyDialog(String title, message, buttonText) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text(title),
-                Text(message),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(buttonText),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   void _createPhoto() async {
     try {
@@ -75,7 +49,8 @@ class _TakePhotoState extends State<TakePhoto> {
                   longitude: pos.longitude,
                   latitude: pos.latitude)));
     } on CameraException {
-      await _showMyDialog(
+      await DialogMessage.showMyDialog(
+            context,
           "Ошибка с работой камеры",
           "Пожалуйста повторите попытку. Попробуйте поменять режим вспышки на без вспышки или с включенным фонариком.",
           "Повторить");

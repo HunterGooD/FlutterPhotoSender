@@ -5,6 +5,8 @@ import 'package:flutter_camera/data/repository/photo_repository.dart';
 import 'package:flutter_camera/domain/state/camera/camera_state.dart';
 import 'package:flutter_camera/domain/state/camera/main_camera_state.dart';
 
+import 'DialogMessage.dart';
+
 class OpenImage extends StatelessWidget {
   CameraState _cameraState;
   final XFile photo;
@@ -15,8 +17,14 @@ class OpenImage extends StatelessWidget {
     _cameraState = new MainCameraState(new Repository());
   }
 
-  _send() async {
+  _send(BuildContext context) async {
     await _cameraState.uploadPhoto(photo: File(photo.path), longitude: longitude, latitude: latitude);
+    await DialogMessage.showMyDialog(
+        context,
+        "Фотография загружена",
+        "Можете закрыть приложение",
+        "Ок");
+    Navigator.popUntil(context, ModalRoute.withName("/"));
   }
 
   @override
@@ -45,7 +53,7 @@ class OpenImage extends StatelessWidget {
                 ),
               ),
               RaisedButton(
-                onPressed: _send,
+                onPressed: () => _send(context),
                 child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                     child: Row(
