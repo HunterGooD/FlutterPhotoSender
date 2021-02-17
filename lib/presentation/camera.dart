@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:flutter_camera/domain/state/camera/camera_state.dart';
 
 import 'package:flutter_camera/presentation/OpenImage.dart';
 
@@ -20,13 +19,40 @@ class _TakePhotoState extends State<TakePhoto> {
   CameraController _cameraController;
   Future<void> _initialControllerFuture;
   final _mainColor = Colors.blue;
-  CameraState _cameraState;
 
   @override
   void initState() {
     _cameraController =
         CameraController(widget.firstCamera, ResolutionPreset.high);
     _initialControllerFuture = _cameraController.initialize();
+  }
+
+  Future<void> _showMyDialog(String title, message, buttonText) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(title),
+                Text(message),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(buttonText),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _createPhoto() async {
@@ -37,13 +63,10 @@ class _TakePhotoState extends State<TakePhoto> {
       await _cameraController.takePicture().then((XFile file) {
         photo = file;
       });
-      print("SHOT");
       onSetFlashModeButtonPressed(FlashMode.off);
       await _determinePosition().then((Position geoPosition) {
         pos = geoPosition;
       });
-      print("POSITION");
-      print(pos);
       Navigator.push(
           context,
           MaterialPageRoute(
@@ -51,8 +74,15 @@ class _TakePhotoState extends State<TakePhoto> {
                   photo: photo,
                   longitude: pos.longitude,
                   latitude: pos.latitude)));
+    } on CameraException {
+      await _showMyDialog(
+          "Ошибка с работой камеры",
+          "Пожалуйста повторите попытку. Попробуйте поменять режим вспышки на без вспышки или с включенным фонариком.",
+          "Повторить");
+      _cameraController.dispose();
+      Navigator.pop(context);
     } catch (e) {
-      debugPrint(e);
+      debugPrint(e.toString());
     }
   }
 

@@ -1,39 +1,22 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
+import 'package:flutter_camera/data/repository/photo_repository.dart';
+import 'package:flutter_camera/domain/state/camera/camera_state.dart';
+import 'package:flutter_camera/domain/state/camera/main_camera_state.dart';
 
 class OpenImage extends StatelessWidget {
+  CameraState _cameraState;
   final XFile photo;
   final double longitude;
   final double latitude;
 
-  const OpenImage({Key key, this.photo, this.longitude, this.latitude})
-      : super(key: key);
+  OpenImage({Key key, this.photo, this.longitude, this.latitude}) :super(key: key) {
+    _cameraState = new MainCameraState(new Repository());
+  }
 
-  // TODO: вынести в репозиторий
   _send() async {
-    final file = File((photo.path));
-    final String url = 'https://defsgthjyhtgrkj.herokuapp.com';
-    String fileName = file.path.split('/').last;
-    print(fileName);
-
-    FormData data = FormData.fromMap({
-      "longitude": longitude,
-      "latitude": latitude,
-      "photo": await MultipartFile.fromFile(
-        file.path,
-        filename: fileName,
-      ),
-    });
-
-    Dio dio = new Dio();
-
-    dio.post(url + "/api/upload", data: data).then((response) {
-      var jsonResponse = jsonDecode(response.toString());
-      print(jsonResponse);
-    }).catchError((error) => print(error));
+    await _cameraState.uploadPhoto(photo: File(photo.path), longitude: longitude, latitude: latitude);
   }
 
   @override

@@ -1,16 +1,13 @@
-import 'dart:convert';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_camera/presentation/camera.dart';
 import 'package:camera/camera.dart';
 
 class Home extends StatefulWidget {
-
   /// Заголовок приложения
   final String title;
 
   Home({Key key, this.title}) : super(key: key);
-
 
   @override
   _HomeState createState() => _HomeState();
@@ -23,18 +20,23 @@ class _HomeState extends State<Home> {
     // ignore: deprecated_member_use
     _scaffoldKey.currentState.showSnackBar(SnackBar(
         content: Text(
-          message,
-          style: TextStyle(color: Colors.red),
-        )));
+      message,
+      style: TextStyle(color: Colors.red),
+    )));
   }
+
   void _toCreatePhoto() async {
     final cameras = await availableCameras();
-    if (cameras == null){
+    if (cameras == null) {
       showInSnackBar("Нужны права для использования камеры");
     }
     final cameraFirst = cameras.first;
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => TakePhoto(firstCamera: cameraFirst,)));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => TakePhoto(
+                  firstCamera: cameraFirst,
+                )));
   }
 
   @override
@@ -53,7 +55,16 @@ class _HomeState extends State<Home> {
                 child: Padding(
                     padding: EdgeInsets.all(10),
                     child: Column(
-                      children: [Text("Отправить фото"), Icon(Icons.add_a_photo)],
+                      children: [
+                        Text(
+                          "Отправить фото",
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        Padding(
+                            padding: EdgeInsets.only(top: 10),
+                            child: Icon(Icons.add_a_photo))
+                      ],
                     ))),
           ],
         ),
