@@ -24,7 +24,7 @@ class Repository extends PhotoRepository {
     dynamic JSONResponse;
     await dio.post(url + "/api/upload", data: data).then((response) {
       JSONResponse = jsonDecode(response.toString());
-    }).catchError((error) => debugPrint(error.toString()));
+    });
     return JSONResponse;
   }
 }

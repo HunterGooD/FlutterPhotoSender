@@ -57,7 +57,13 @@ class _TakePhotoState extends State<TakePhoto> {
       _cameraController.dispose();
       Navigator.pop(context);
     } catch (e) {
-      debugPrint(e.toString());
+      DialogMessage.showMyDialog(
+          context,
+          "Ошибка приложения",
+          "Пожалуйста повторите попытку.",
+          "Повторить");
+      _cameraController.dispose();
+      Navigator.pop(context);
     }
   }
 
