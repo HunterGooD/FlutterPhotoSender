@@ -7,23 +7,55 @@ import 'package:flutter_camera/domain/state/camera/main_camera_state.dart';
 
 import 'DialogMessage.dart';
 
-class OpenImage extends StatelessWidget {
+class OpenImage extends StatefulWidget {
   CameraState _cameraState;
   final XFile photo;
   final double longitude;
   final double latitude;
 
-  OpenImage({Key key, this.photo, this.longitude, this.latitude}) :super(key: key) {
+  OpenImage({Key key, this.photo, this.longitude, this.latitude})
+      : super(key: key) {
     _cameraState = new MainCameraState(new Repository());
   }
 
+  @override
+  _OpenImageState createState() => _OpenImageState();
+}
+
+class _OpenImageState extends State<OpenImage> {
+  bool _load = false;
+
   _send(BuildContext context) async {
-    await _cameraState.uploadPhoto(photo: File(photo.path), longitude: longitude, latitude: latitude);
+    setState(() {
+      _load = true;
+    });
+    var data = await widget._cameraState.uploadPhoto(
+        photo: File(widget.photo.path),
+        longitude: widget.longitude,
+        latitude: widget.latitude);
+
+    if (data == null) {
+      await DialogMessage.showMyDialog(
+          context,
+          "Фотография не загружена",
+          "Ошибка при отправке повторите позже.Проверьте соединение с интернетом",
+          "Повторить");
+      setState(() {
+        _load = false;
+      });
+      return;
+    }
+
+    if (data["error"] != null) {
+      await DialogMessage.showMyDialog(context, "Фотография не загружена",
+          "Ошибка отправки фотографии " + data["error"], "Повторить");
+      setState(() {
+        _load = false;
+      });
+      return;
+    }
     await DialogMessage.showMyDialog(
-        context,
-        "Фотография загружена",
-        "Можете закрыть приложение",
-        "Ок");
+        context, "Фотография загружена", "Можете закрыть приложение", "Ок");
     Navigator.popUntil(context, ModalRoute.withName("/"));
   }
 
@@ -42,18 +74,18 @@ class OpenImage extends StatelessWidget {
                   child: Padding(
                 padding: EdgeInsets.only(bottom: 10),
                 child: Image.file(
-                  File((photo.path)),
+                  File((widget.photo.path)),
                 ),
               )),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 10),
                 child: Text(
-                  "Позиция $latitude:$longitude",
+                  "Позиция ${widget.latitude}:${widget.longitude}",
                   style: TextStyle(fontSize: 20),
                 ),
               ),
               RaisedButton(
-                onPressed: () => _send(context),
+                onPressed: _load == false ? () => _send(context) : null,
                 child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                     child: Row(

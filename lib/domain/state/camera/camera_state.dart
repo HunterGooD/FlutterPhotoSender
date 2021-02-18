@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_camera/domain/repository/photo_repository.dart';
 
@@ -11,11 +12,12 @@ abstract class CameraState {
 
   bool loadFinish = false;
 
-  Future<void> uploadPhoto(
+  Future<dynamic> uploadPhoto(
       {@required File photo,
       @required double longitude,
       @required double latitude}) async {
-    final data = await _photoRepository.uploadPhoto(photo: photo, longitude: longitude, latitude: latitude);
-    print(data);
+    final data = await _photoRepository.uploadPhoto(
+        photo: photo, longitude: longitude, latitude: latitude);
+    return data;
   }
 }
