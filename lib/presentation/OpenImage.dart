@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_camera/data/repository/photo_repository.dart';
 import 'package:flutter_camera/domain/state/camera/camera_state.dart';
 import 'package:flutter_camera/domain/state/camera/main_camera_state.dart';
+import 'package:flutter_camera/presentation/DialogLoader.dart';
 
 import 'DialogMessage.dart';
 
@@ -24,15 +25,19 @@ class OpenImage extends StatefulWidget {
 
 class _OpenImageState extends State<OpenImage> {
   bool _load = false;
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
   _send(BuildContext context) async {
     setState(() {
       _load = true;
     });
+
+    DialogLoader.showLoadingDialog(context, _keyLoader);
     var data = await widget._cameraState.uploadPhoto(
         photo: File(widget.photo.path),
         longitude: widget.longitude,
         latitude: widget.latitude);
+    Navigator.of(_keyLoader.currentContext,rootNavigator: true).pop();
 
     if (data == null) {
       await DialogMessage.showMyDialog(

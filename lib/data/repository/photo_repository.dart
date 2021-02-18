@@ -21,10 +21,13 @@ class Repository extends PhotoRepository {
       ),
     });
     Dio dio = new Dio();
+    dio.options.connectTimeout = 5000;
+    dio.options.receiveTimeout = 5000;
+
     dynamic JSONResponse;
     await dio.post(url + "/api/upload", data: data).then((response) {
       JSONResponse = jsonDecode(response.toString());
-    });
+    }).catchError((e) => print(e));
     return JSONResponse;
   }
 }

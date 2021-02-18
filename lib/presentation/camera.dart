@@ -28,7 +28,6 @@ class _TakePhotoState extends State<TakePhoto> {
     _initialControllerFuture = _cameraController.initialize();
   }
 
-
   void _createPhoto() async {
     try {
       await _initialControllerFuture;
@@ -50,18 +49,15 @@ class _TakePhotoState extends State<TakePhoto> {
                   latitude: pos.latitude)));
     } on CameraException {
       await DialogMessage.showMyDialog(
-            context,
+          context,
           "Ошибка с работой камеры",
           "Пожалуйста повторите попытку. Попробуйте поменять режим вспышки на без вспышки или с включенным фонариком.",
           "Повторить");
       _cameraController.dispose();
       Navigator.pop(context);
     } catch (e) {
-      DialogMessage.showMyDialog(
-          context,
-          "Ошибка приложения",
-          "Пожалуйста повторите попытку.",
-          "Повторить");
+      DialogMessage.showMyDialog(context, "Ошибка приложения",
+          "Пожалуйста повторите попытку.", "Повторить");
       _cameraController.dispose();
       Navigator.pop(context);
     }
