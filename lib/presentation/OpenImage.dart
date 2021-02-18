@@ -37,7 +37,7 @@ class _OpenImageState extends State<OpenImage> {
         photo: File(widget.photo.path),
         longitude: widget.longitude,
         latitude: widget.latitude);
-    Navigator.of(_keyLoader.currentContext,rootNavigator: true).pop();
+    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
 
     if (data == null) {
       await DialogMessage.showMyDialog(
@@ -59,8 +59,12 @@ class _OpenImageState extends State<OpenImage> {
       });
       return;
     }
+    print(data);
+
     await DialogMessage.showMyDialog(
-        context, "Фотография загружена", "Можете закрыть приложение", "Ок");
+        context, "Фотография загружена", "Можете закрыть приложение", "Ок",
+        link: 'https://defsgthjyhtgrkj.herokuapp.com' +
+            data["response"]["photoTempURL"]);
     Navigator.popUntil(context, ModalRoute.withName("/"));
   }
 
