@@ -34,17 +34,16 @@ class _TakePhotoState extends State<TakePhoto> {
         .initialize()
         .then((_) {})
         .catchError((_) => SchedulerBinding.instance
-            .addPostFrameCallback((_) => _toHome(context)));
+            .addPostFrameCallback((_) => _toHome(context, "Не удалось получить доступ к камере")));
   }
 
-  void _toHome(BuildContext context) {
-    Navigator.pop(context, "Не удалось получить доступ к камере");
+  void _toHome(BuildContext context, String text) {
+    Navigator.pop(context, text);
   }
 
   void _createPhoto() async {
     final GlobalKey<State> _keyLoader = new GlobalKey<State>();
     try {
-      DialogLoader.showLoadingDialog(context, _keyLoader);
       await _initialControllerFuture;
       Position pos;
       XFile photo;
@@ -53,6 +52,7 @@ class _TakePhotoState extends State<TakePhoto> {
       });
       onSetFlashModeButtonPressed(FlashMode.off);
 
+      DialogLoader.showLoadingDialog(context, _keyLoader, text: "Получение геоданных");
       await _determinePosition().then((Position geoPosition) {
         pos = geoPosition;
       });
@@ -66,7 +66,6 @@ class _TakePhotoState extends State<TakePhoto> {
                   longitude: pos.longitude,
                   latitude: pos.latitude)));
     } on CameraException {
-      Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
       await DialogMessage.showMyDialog(
           context,
           "Ошибка с работой камеры",
@@ -76,10 +75,7 @@ class _TakePhotoState extends State<TakePhoto> {
       Navigator.pop(context);
     } catch (e) {
       Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
-      DialogMessage.showMyDialog(context, "Ошибка приложения",
-          "Пожалуйста повторите попытку.", "Повторить");
-      _cameraController.dispose();
-      Navigator.pop(context);
+      _toHome(context, "Не удается получить данные геолокации.");
     }
   }
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class DialogLoader {
   static Future<void> showLoadingDialog(
-      BuildContext context, GlobalKey key) async {
+      BuildContext context, GlobalKey key, {String text}) async {
     return showDialog<void>(
         context: context,
         barrierDismissible: false,
@@ -20,7 +20,7 @@ class DialogLoader {
                           height: 10,
                         ),
                         Text(
-                          "Ожидание....",
+                          text == null ? "Ожидание....": text,
                           style: TextStyle(color: Colors.red),
                         )
                       ]),
