@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_camera/presentation/DialogMessage.dart';
 import 'package:flutter_camera/presentation/camera.dart';
 import 'package:camera/camera.dart';
 
@@ -28,15 +29,20 @@ class _HomeState extends State<Home> {
   void _toCreatePhoto() async {
     final cameras = await availableCameras();
     if (cameras == null) {
-      showInSnackBar("Нужны права для использования камеры");
+      await DialogMessage.showMyDialog(context, "Ошибка",
+          "Нужны права для использования камеры", "повторить");
+      return;
     }
     final cameraFirst = cameras.first;
-    Navigator.push(
+    final result = await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => TakePhoto(
                   firstCamera: cameraFirst,
                 )));
+    if (result != null) {
+      DialogMessage.showMyDialog(context, "Ошибка", result, "Ок");
+    }
   }
 
   @override
