@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_camera/domain/repository/photo_repository.dart';
+import 'package:flutter_camera/internal/Config.dart';
 
 class Repository extends PhotoRepository {
   @override
@@ -24,7 +25,15 @@ class Repository extends PhotoRepository {
     dio.options.receiveTimeout = 5000;
 
     dynamic JSONResponse;
-    await dio.post(url + "/api/upload", data: data).then((response) {
+    await dio
+        .post(url + "/api/upload",
+            data: data,
+            options: Options(
+              headers: {
+                "Authorization": Config.sessionID,
+              },
+            ))
+        .then((response) {
       JSONResponse = jsonDecode(response.toString());
     }).catchError((e) => print(e));
     return JSONResponse;

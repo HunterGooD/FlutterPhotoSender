@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_camera/internal/Config.dart';
 import 'package:flutter_camera/presentation/DialogMessage.dart';
 import 'package:flutter_camera/presentation/camera.dart';
 import 'package:camera/camera.dart';
@@ -51,6 +52,17 @@ class _HomeState extends State<Home> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(widget.title),
+        actions: [
+          IconButton(
+              icon: Icon(
+                Icons.logout,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Config.sessionID = "";
+                Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
+              }),
+        ],
       ),
       body: Center(
         child: Column(
