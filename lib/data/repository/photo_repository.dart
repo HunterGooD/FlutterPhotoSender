@@ -9,7 +9,7 @@ class Repository extends PhotoRepository {
   Future<dynamic> uploadPhoto(
       {File photo, double longitude, double latitude}) async {
     final file = photo;
-    final String url = 'https://defsgthjyhtgrkj.herokuapp.com';
+    final String url = Config.url;
     String fileName = file.path.split('/').last;
 
     FormData data = FormData.fromMap({

@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_camera/domain/repository/auth_repository.dart';
+import 'package:flutter_camera/internal/Config.dart';
 
 class AuthRepo extends AuthRepository {
   @override
   Future<dynamic> signIn({String login, String password}) async {
-    final String url =
-        'http://192.168.43.13:8080'; //'https://defsgthjyhtgrkj.herokuapp.com';
+    final String url = Config.url;
 
     Dio dio = new Dio();
     dio.options.connectTimeout = 5000;

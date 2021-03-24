@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_camera/data/repository/photo_repository.dart';
 import 'package:flutter_camera/domain/state/camera/camera_state.dart';
 import 'package:flutter_camera/domain/state/camera/main_camera_state.dart';
+import 'package:flutter_camera/internal/Config.dart';
 import 'package:flutter_camera/presentation/DialogLoader.dart';
 
 import 'DialogMessage.dart';
@@ -63,7 +64,7 @@ class _OpenImageState extends State<OpenImage> {
 
     await DialogMessage.showMyDialog(
         context, "Фотография загружена", "Можете закрыть приложение", "Ок",
-        link: 'https://defsgthjyhtgrkj.herokuapp.com' +
+        link: Config.url +
             data["response"]["photoTempURL"]);
     Navigator.popUntil(context, ModalRoute.withName("/"));
   }
