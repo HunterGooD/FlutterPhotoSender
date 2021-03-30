@@ -13,6 +13,8 @@ class Repository extends PhotoRepository {
     String fileName = file.path.split('/').last;
 
     FormData data = FormData.fromMap({
+      "object_id": Config.objectID,
+      "storage_id": Config.storageID,
       "longitude": longitude,
       "latitude": latitude,
       "photo": await MultipartFile.fromFile(

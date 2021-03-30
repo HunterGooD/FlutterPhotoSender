@@ -4,9 +4,11 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_camera/presentation/DialogMessage.dart';
-import 'package:geolocator/geolocator.dart';
+
 
 import 'package:flutter_camera/presentation/OpenImage.dart';
+import 'package:flutter_camera/presentation/geo.dart';
+import 'package:geolocator/geolocator.dart';
 
 import 'DialogLoader.dart';
 
@@ -53,7 +55,7 @@ class _TakePhotoState extends State<TakePhoto> {
       onSetFlashModeButtonPressed(FlashMode.off);
 
       DialogLoader.showLoadingDialog(context, _keyLoader, text: "Получение геоданных");
-      await _determinePosition().then((Position geoPosition) {
+      await GeoDate.determinePosition().then((Position geoPosition) {
         pos = geoPosition;
       });
       Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
@@ -79,33 +81,7 @@ class _TakePhotoState extends State<TakePhoto> {
     }
   }
 
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      await Geolocator.openLocationSettings();
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permantly denied, we cannot request permissions.');
-    }
-
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission != LocationPermission.whileInUse &&
-          permission != LocationPermission.always) {
-        return Future.error(
-            'Location permissions are denied (actual value: $permission).');
-      }
-    }
-    return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-  }
 
   Future<void> setFlashMode(FlashMode mode) async {
     try {

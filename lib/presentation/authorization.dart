@@ -45,6 +45,7 @@ class _AuthorizationState extends State<Authorization> {
       Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
       if (data["token"] != null) {
         Config.sessionID = data["token"];
+        Config.fio = data["fio"];
         Navigator.of(context).pushNamedAndRemoveUntil("/", (route) => false);
       } else if (data["error"] != null) {
         DialogMessage.showMyDialog(
